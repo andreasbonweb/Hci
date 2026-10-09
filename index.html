@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HCI Exam Drill</title>
+<style>
+:root{--bg:#0f1419;--card:#1a212b;--tx:#e8edf2;--mu:#8b98a5;--ok:#1f9d63;--no:#d1495b;--ac:#4c8dff}
+@media(prefers-color-scheme:light){:root{--bg:#f2f4f7;--card:#fff;--tx:#18202a;--mu:#5d6b79}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,sans-serif;padding:16px}
+main{max-width:720px;margin:auto}
+#st{display:flex;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--mu);margin-bottom:12px}
+#st b{color:var(--tx)}#st span{background:var(--card);padding:4px 10px;border-radius:99px}
+.card{background:var(--card);border-radius:14px;padding:20px}
+#q{font-size:19px;font-weight:600;margin:0 0 16px}
+.o{display:block;width:100%;text-align:left;background:transparent;color:var(--tx);border:1.5px solid var(--mu);border-radius:10px;padding:12px 14px;margin:8px 0;font:inherit;cursor:pointer}
+.o:hover:not(:disabled){border-color:var(--ac)}.o:disabled{cursor:default}
+.o.c{border-color:var(--ok);background:rgba(31,157,99,.18)}.o.w{border-color:var(--no);background:rgba(209,73,91,.18)}
+#fb{margin-top:14px;font-size:14px}#fb p{margin:6px 0}#fb .h{font-weight:700;font-size:16px}
+#fb small{color:var(--mu);display:block}
+.btn{margin-top:14px;background:var(--ac);color:#fff;border:0;border-radius:10px;padding:10px 20px;font:inherit;cursor:pointer}
+.r{background:transparent;color:var(--mu);border:1px solid var(--mu);float:right;margin:0;padding:2px 10px;font-size:12px}
+</style></head><body><main>
+<div id="st"></div>
+<div class="card"><p id="q"></p><div id="os"></div><div id="fb"></div><button class="btn" id="nx" hidden>Next ▸ (Enter)</button></div>
+<p style="font-size:12px;color:var(--mu)">Keys 1–4 answer · Enter next. Wrong answers return in ~3 turns; correct ones move to longer review intervals and never leave the loop.
+<button class="btn r" id="rs">Reset progress</button></p>
+</main>
+<script>
+// Term notes (taken from the slides). Used to explain every option.
+const T={
+"Slip":"formulated the right action, but fail to execute that action correctly (e.g. mistype)",
+"Mistake":"don’t know the system well and cannot formulate the right goal (e.g. ‘magnifying glass’ icon read as ‘find’)",
+"Sketchpad":"Ivan Sutherland, 1962: graphics system with light pen dragging for geometric shapes and lines",
+"Star":"XEROX system, 1981","Macintosh":"Apple, 1984: one-button mouse, GUI, direct manipulation","Light pen":"the dragging input device of Sketchpad, not the system itself",
+"1962":"Ivan Sutherland – Sketchpad","1963":"Douglas Engelbart","1981":"XEROX Star","1984":"Apple Macintosh",
+"One-button mouse":"the simple, intuitive input of the Apple Macintosh (1984)","3 button mouse":"a Point technique listed with 1 button / scroll wheel, not the Macintosh’s","Scroll wheel mouse":"a Point technique listed with 1 button / 3 button, not the Macintosh’s",
+"Cognitive system":"provides the processing needed to connect the perceptual and motor system","Perceptual system":"handling sensory stimulus from the outside world","Motor system":"control actions","Short term memory":"remember an insubstantial amount of information for a short period (70 ms access)",
+"Inclusiveness":"being fair, open, and equal to everyone; accommodate the widest possible number of people","Accessibility":"the extent to which an interactive product is accessible by as many people as possible","Usability":"ensure interactive products are easy to learn, effective to use, and enjoyable from the user’s perspective","User Experience (UX)":"how a product behaves and is used by people in the real world",
+"120 million":"rods per eye (highly sensitive to light)","6 million":"cones per eye (tolerate more light)","20 million":"not the figure given: 120 millions rods, 6 millions cones","12 million":"not the figure given: 120 millions rods, 6 millions cones",
+"Blind spot":"has no rods or cones","Fovea":"small area of retina where images are fixated","Retina":"focus the light into a sharp image","Cones":"can tolerate more light (6 millions)",
+"20Hz to 15kHz":"the human ear range given in the slides","20Hz to 20kHz":"not the range given (upper limit is 15kHz)","15Hz to 15kHz":"not the range given (lower limit is 20Hz)","20Hz to 10kHz":"not the range given (upper limit is 15kHz)",
+"Pitch":"frequency of sound; low frequency produces low pitch","Loudness":"proportional to the amplitude of the sound; the frequency remain constant","Timbre":"the type of sound; may have same pitch and loudness","Cocktail party effect":"sounds too loud or frequencies too similar -> unable to differentiate sounds",
+"Stage 1":"information is encoded from the environment into some form of internal representation","Stage 2":"internal representation compared with memorized representations stored in the brain","Stage 3":"deciding on a response to the encoded stimulus","Stage 4":"organization of the response and necessary action",
+"Functional":"organize and place together","Sequential":"organize to reflect order of use","Frequency":"most commonly used control being the most easily accessible","Size of the user":"physical environment factor: small or largest, wheelchair",
+"Data replication":"one event can be shared between multiple services that need to copy its data into their databases","Parallel processing":"multiple processes triggered by one event execute asynchronously of each other","Redundancy":"if a service is down, events can be persisted in the router until the service is available","Scalability":"can add service instances to scale","Responsiveness":"provides the fastest possible response time",
+"Micro services":"architectural design for building a distributed application using containers","Virtual machine":"operate multiple operating systems at the same time, from the same piece of hardware","Technological Convergence":"merging, blending, integration of independent technologies into a completely new converged technology (digital convergence)","Multimedia Interface":"combine different types of media for more natural and more efficient human computer communication",
+"Low Fidelity Prototype":"use manual procedures like sketching in a paper","Medium Fidelity Prototype":"involves some but not all procedures of the system (first screen of a GUI)","Hi Fidelity Prototype":"simulates all the functionalities of the system; requires time, money and work force","Storyboarding":"visual representation of a user’s interaction with a product",
+"Thought Input":"users input and control the interfaces according to their thoughts; no physical input devices","3D Holographic Projection":"3D projection created by light refraction that floats in space","Augmented Reality (AR)":"integration of digital information with the user’s environment in real time","Virtual Reality (VR)":"creates a totally artificial environment","Gaze":"head-mounted display can track eye movement as a means of interaction",
+"Mechanical":"marks each key press with a click that can be felt and usually heard (touch typists, programmers, gamers)","Membrane":"used in industrial control systems, medical equipment, telephone systems, retail store machines","Chord keyboard":"a keyboard type listed with QWERTY, Alphabetical, Dvorak, Mobile, Numeric","Dvorak":"a keyboard layout listed with QWERTY and Alphabetical",
+"Digital paper":"thin flexible materials written to electronically; keep contents even when removed from any electrical supply","Digital pen":"store handwriting and upload it to a computer",
+"Analyze the audio":"speech recognition step 1","Break it into parts":"speech recognition step 2","Digitize it into a computer-readable format":"speech recognition step 3","Use an algorithm to match it to the most suitable text representation":"speech recognition step 4 (last)",
+"Low precision":"imprecise positioning; the finger may be too large for accurate pointing with small objects","Fatigue":"straining the arm muscles under heavy use (especially if screen placed vertically)","Dirt":"the screen gets dirty from fingerprints","Screen coverage":"the user’s hand, finger or pen may obscure parts of the screen","Hand movements":"requires that users move the hand away from the keyboard",
+"Cortana":"Microsoft’s voice assistant","Siri":"Apple’s voice assistant","Alexa":"Amazon’s voice assistant","Google’s Assistant":"Google’s voice assistant",
+"Artificial Intelligent (AI)":"simulation of human intelligence in machines programmed to think like humans and mimic their actions","Machine Learning (ML)":"training a computer; focus on data and algorithms to mirror the way that humans learn","Neural Network":"inspired by the human brain; mimic the way that biological neurons signal to one another","Expert Systems (ES)":"solve complex problems in a particular domain using the knowledge base of that domain","Natural Language Processing (NLP)":"giving computers the ability to understand the text and speak words in the same way human beings can","Robotics":"design machines that can help and assist humans (manufacturing, construction, operations)",
+"Goal-oriented persona":"“What does my typical user want to do with my product?”","Role-based persona":"reflect upon the part that users play in their organizations or wider lives","Engaging persona":"move from designers seeing the user as a stereotype to actively involving themselves in the lives of the personas",
+"Geofencing":"an electronic boundary placed around a particular area (just-in-time information)","Gamification":"training format: practical application","Interactive demo":"training format: simulation","Video-based learning":"a training format listed with interactive demo, gamification, geofencing",
+"Semantic Network Representation":"IS-A relation (Inheritance); kind-of-relation","Frame Representation":"collection of attributes and its values describing an entity; divides knowledge into substructures by representing stereotypes situations","Production Rules":"knowledge stored as IF-THEN rules","Logical Representation":"draw conclusions based on various conditions; syntax and semantics","Syntax":"rules which decide how to construct legal sentences in the logic","Semantics":"rules by which we interpret the sentence in the logic; assign a meaning to each sentence",
+"Interoception":"senses prompted from the inside (headaches, hunger, intuition or conscience)","Exteroception":"result of outer-body stimuli, from the outside (smelling frying garlic)","Proprioception":"the body in relation to the space around it (how users hold a device)",
+"Proximity":"view things which are close together as a group","Continuity":"more interest in straight smooth lines than rigid lines that constantly change shape/size","Connectedness":"related objects joined together by a continuous straight line","Symmetry":"a shape repeated on both sides to make a mirror image","Similarity":"a group of objects and shapes placed together","Common groupings":"group images together if they are related or closely related",
+"Pop-out effect":"make one image stand out using a different shape, color or size","Luminance":"able to see a color above another layer / color","Geon":"2D giving a perspective of 3D; quickly recognizable; cheap to produce","Gross 3D":"2D giving a perspective of 3D; difficult for some users to interact with and look at",
+"Inductive":"going from the specific to the general; broad generalizations from specific observations","Deductive":"derives the logically necessary conclusion from the given premises","Abductive":"conclude a claim is true based on one’s knowledge of other claims",
+"Cognitive (Understanding)":"identification and understanding of the skill; many errors, few successes","Associative (Practice)":"errors less frequent, performance more refined; regular feedback","Autonomous (Automatic)":"most advanced level; attend to higher-order cognitive activities",
+"Metaphor":"visuals, actions and procedures that exploit specific knowledge users already have of other domains","Cognitive Model":"describe or predict user performance through a generalized representation (Fitts’ Law, GOMS)",
+"Temporal cues":"indicate where in a process or sequence of sub-tasks the user currently is","Spatial cues":"indicate where in a fill-in form the user currently is","Alerting mechanisms":"animations and pop-up screens: use with care, only for warnings or supplementary information",
+"Luminous Flux":"quantity of the energy of the light emitted per second in all directions","Luminous Intensity":"ability to emit light into a given direction","Illuminance":"amount of light falling onto and spreading over a given surface area","Luminaire":"apparatus which distributes, filters or transforms the light given by a lamp","Reflectance":"ratio of the luminous flux reflected from a surface to the incident luminous flux","Glare":"discomfort or impairment of vision when parts of the visual field are excessively bright in relation to the general surroundings",
+"Direct glare":"caused by bright areas (luminaire ceiling, windows directly in the field of view)","Indirect (Reflected) glare":"caused by light that bounces off nearby surfaces into the eyes (dark colored or glossy surfaces)","Veiling Reflections":"reflection of incident light that obscures details by reducing the contrast","Flicker":"modulation in light output over time","Stroboscopic Effects":"luminous flux modulation perceived when objects are in motion",
+"Repetitive Strain Injury":"pain caused by repeated movement of part of the body","Visual Fatigue":"painful irritation (burning) with lachrymation, reddening of the eyes and conjunctivitis","Tissue Damage":"radiation induces a chemical reaction (photochemical) or heats/burns exposed tissue (thermal)",
+"Physical data flow":"how things happen in an information flow; facilitates development of the code","Logical data flow":"what happens in a particular information flow; communicating with project stakeholders","Entity Relationship Modelling":"define the data elements and relationship for a specified system","Flowchart":"represents an algorithm, workflow or process",
+"Attribute":"describe the property of an entity","Entity":"any object, class, person or place","Relationship":"describe the relation between entities",
+"Operator Action Event Tree (OAET)":"tree-like diagram of the sequence of decisions and actions; omissions modeled with consequences","Decision/action flow diagrams":"similar to flow charts; based on binary choice decisions and intervening operations","Hierarchical Task Analysis":"disintegrate tasks into subtasks (task decomposition, knowledge-based techniques)",
+"Card Sorting":"ask users to organize content, pages and topics into categories","Focus Group":"invite a group of intended users to share thoughts collectively; multiple perspectives at once","Participatory Design":"involve users in the generation of different product prototypes directly","Interviews":"effective in early stages; open format lets designer dig for detailed insights","Questionnaires & surveys":"obtain a large amount of statistical data; feedback generally brief and simple","Usability Testing":"users interact with the product while a moderator takes notes; uncover bugs and other issues",
+"User control and freedom":"clearly marked ‘emergency exit’; support undo and redo","Error prevention":"prevent a problem in the first place; confirmation option before committing","Help users recognize, diagnose, and recover from errors":"error messages in plain language; constructively suggest a solution","Consistency and standards":"users should not wonder whether different words, situations, or actions mean the same; follow platform conventions","Recognition rather than recall":"minimize memory load by making objects, actions, and options visible","Flexibility and efficiency of use":"cater to novice and expert users; tailor frequent actions (auto fill)","Aesthetic and minimalist design":"dialogues should not contain irrelevant or rarely needed information","Match between system and the real world":"speak the users’ language; real life metaphor; natural and logical order","Visibility of system status":"keep users informed about current state and actions via visual cues and feedback","Help and Documentation":"easy to search, task-focused, concrete steps, not too large (contextual help)",
+"Design Dialog to Yield Closure":"close any interaction based on its cause (thank you, validation, summary message)","Permit Easy Reversal of Actions":"return to previous state; relieve anxiety, encourage exploration","Support Internal Locus of Control":"the user is in control of the system; respond to the user’s action","Reduce Short-Term Memory Load":"keep display simple; consolidate multiple page display; time for learning action sequence","Enable Frequent Users to Use Shortcuts":"minimum of clicks; good menu hierarchy; features for advanced users and beginners","Offer Informative Feedback":"display feedback immediately for every user action","Offer Simple Error Handling":"clear error notifications; descriptive hints to resolve the problem","Strive for Consistency":"layout, button size, color code, tone; develop identity; not lose users",
+"Ten":"Nielsen’s Ten Heuristics","Eight":"Shneiderman’s Eight Golden Rules","Seven":"Norman’s Seven Principles","Six":"NASA-TLX first part: six subscales on a single page",
+"Interface Mock Up":"quick sketch of a GUI (paper and pencils, word processor, slide show software)","Interface Building":"design methods for command languages, data-entry structures, and widgets","Visual Editing":"tools such as Macromedia Director, Flash, Dreamweaver, Microsoft Visio","Context Sensitive Help":"information provided to users based on the activity of the user",
+"Research":"production stage 1","Use Cases":"production stage 2","Interface Structure":"production stage 3","Interface Prototyping":"production stage 4","Defining stylistics":"production stage 5","Design Concept":"production stage 6","Designing of all screens":"production stage 7","Interface animation":"production stage 8","Preparation of materials for programmers":"production stage 9 (last)",
+"Linear":"one way through the interface; start, next and back buttons only; the most structured","Hierarchical":"like a family tree; every page has a parent; only one path to each page; breadcrumb trails","Webbed":"hierarchical with additional links; pages link to similar or related topics","Composite":"allows the user to navigate freely",
+"Rapid movements across long distances":"good for a small Control / Display Ratio (poor for accurate positioning)","Accurate positioning":"good for a large Control / Display Ratio (poor for long movements)",
+"Subtract one from the user response":"SUS rule for ODD number questions","Subtract the user responses from five":"SUS rule for EVEN number questions","Multiply the total by 2.5":"final SUS step after adding up converted responses","Multiply the total by 5":"not the SUS multiplier (2.5)",
+"Subjective Mental Effort Questionnaire":"measures the mental effort people feel was involved in a task; easy to administer","NASA-TLX":"widely-used, subjective, multidimensional; rates perceived workload","Usability Magnitude Estimation":"1 question; measure judgments of sensory stimuli, difficulty of tasks","After-Scenario Questionnaire":"3 questions; commonly use",
+"Standardized User Experience Percentile Rank Questionnaire":"judge whether a website is Usable, Credible, Visually appealing","System Usability Scale":"test-level satisfaction; odd/even conversion, total × 2.5","Net Promoter Score (NPS)":"a test-level satisfaction measure",
+"Fitts’s Law":"time to acquire a target is a function of the distance to and size of the target","Keystroke Level Model (KLM)":"predict how long an experienced user takes to complete a routine task","Control / Display Ratio":"large: accurate positioning; small: rapid movements across long distances",
+"Test policy":"principles, methods and all the important testing goals of the organization","Test strategy":"identifies the Test Levels (types) to be executed for the project","Test plan":"complete planning document: scope, approach, resources and schedule","Requirements Traceability Matrix":"connects the requirements to the test cases","Test Scenario":"item or event of a software system verifiable by one or more Test cases","Test case":"group of input values, execution preconditions, expected postconditions and results","Test Data":"exists before a test is executed; used to execute the test case","Defect Report":"any flaw in a software system which fails to perform its expected function","Test summary report":"summarizes testing activities conducted as well as the test result"
+};
+// [stem, correct, wrong, wrong, wrong]
+const Q=[
+["Formulated the right action, but fail to execute that action correctly","Slip","Mistake","Cocktail party effect","Stage 4"],
+["Don’t know the system well and cannot formulate the right goal","Mistake","Slip","Alerting mechanisms","Stage 3"],
+["Ivan Sutherland – 1962","Sketchpad","Star","Macintosh","Light pen"],
+["XEROX Star – year","1981","1962","1963","1984"],
+["Apple Macintosh (1984) – input device","One-button mouse","3 button mouse","Scroll wheel mouse","Light pen"],
+["Provides the processing needed to connect the perceptual and motor system","Cognitive system","Perceptual system","Motor system","Short term memory"],
+["Being fair, open, and equal to everyone","Inclusiveness","Accessibility","Usability","User Experience (UX)"],
+["The extent to which an interactive product is accessible by as many people as possible","Accessibility","Inclusiveness","Usability","User Experience (UX)"],
+["Easy to learn, effective to use, and enjoyable from the user’s perspective","Usability","Accessibility","Inclusiveness","User Experience (UX)"],
+["Rods per eye","120 million","6 million","20 million","12 million"],
+["Part of the retina with no rods or cones","Blind spot","Fovea","Retina","Cones"],
+["Small area of retina where images are fixated","Fovea","Blind spot","Retina","Cones"],
+["Frequency range of the human ear","20Hz to 15kHz","20Hz to 20kHz","15Hz to 15kHz","20Hz to 10kHz"],
+["Frequency of sound","Pitch","Loudness","Timbre","Cocktail party effect"],
+["Proportional to the amplitude of the sound","Loudness","Pitch","Timbre","Cocktail party effect"],
+["Same pitch and loudness, different type of sound","Timbre","Pitch","Loudness","Cocktail party effect"],
+["Unable to differentiate sounds that are too loud or too similar in frequency","Cocktail party effect","Timbre","Pitch","Loudness"],
+["Internal representation compared with memorized representations stored in the brain","Stage 2","Stage 1","Stage 3","Stage 4"],
+["Deciding on a response to the encoded stimulus","Stage 3","Stage 2","Stage 1","Stage 4"],
+["Arranging controls to reflect order of use","Sequential","Functional","Frequency","Size of the user"],
+["One event shared between multiple services that copy its data","Data replication","Parallel processing","Redundancy","Scalability"],
+["If a service is down, events persist in the router until it is available","Redundancy","Data replication","Scalability","Responsiveness"],
+["Event-driven systems: the fastest possible response time","Responsiveness","Scalability","Parallel processing","Redundancy"],
+["Distributed application built using containers","Micro services","Virtual machine","Technological Convergence","Multimedia Interface"],
+["Prototype using manual procedures like sketching in a paper","Low Fidelity Prototype","Medium Fidelity Prototype","Hi Fidelity Prototype","Storyboarding"],
+["Prototype of the first screen of a GUI","Medium Fidelity Prototype","Low Fidelity Prototype","Hi Fidelity Prototype","Storyboarding"],
+["Prototype simulating all the functionalities of the system","Hi Fidelity Prototype","Medium Fidelity Prototype","Low Fidelity Prototype","Storyboarding"],
+["Input and control of the interface according to users’ thoughts","Thought Input","Gaze","3D Holographic Projection","Augmented Reality (AR)"],
+["3D projection created by light refraction that floats in space","3D Holographic Projection","Thought Input","Augmented Reality (AR)","Virtual Reality (VR)"],
+["Creates a totally artificial environment","Virtual Reality (VR)","Augmented Reality (AR)","Thought Input","3D Holographic Projection"],
+["Integration of digital information with the user’s environment in real time","Augmented Reality (AR)","Virtual Reality (VR)","Thought Input","3D Holographic Projection"],
+["Also known as digital convergence","Technological Convergence","Multimedia Interface","Virtual machine","Micro services"],
+["Keyboard that marks each key press with a click felt and usually heard","Mechanical","Membrane","Chord keyboard","Dvorak"],
+["Keeps its contents even when removed from any electrical supply","Digital paper","Digital pen","Membrane","Mechanical"],
+["Stores handwriting and uploads it to a computer","Digital pen","Digital paper","Chord keyboard","Membrane"],
+["Speech recognition – first step","Analyze the audio","Break it into parts","Digitize it into a computer-readable format","Use an algorithm to match it to the most suitable text representation"],
+["Speech recognition – last step","Use an algorithm to match it to the most suitable text representation","Analyze the audio","Break it into parts","Digitize it into a computer-readable format"],
+["Touch screen disadvantage: finger too large for small objects","Low precision","Fatigue","Dirt","Screen coverage"],
+["Touch screen disadvantage: straining the arm muscles under heavy use","Fatigue","Low precision","Dirt","Hand movements"],
+["Voice assistant from Microsoft","Cortana","Siri","Alexa","Google’s Assistant"],
+["Simulation of human intelligence in machines programmed to think like humans","Artificial Intelligent (AI)","Machine Learning (ML)","Neural Network","Expert Systems (ES)"],
+["Mimics the way biological neurons signal to one another","Neural Network","Machine Learning (ML)","Expert Systems (ES)","Natural Language Processing (NLP)"],
+["Uses the knowledge base of a domain on the facts of a particular situation","Expert Systems (ES)","Neural Network","Machine Learning (ML)","Robotics"],
+["Ability to understand the text and speak words like human beings","Natural Language Processing (NLP)","Machine Learning (ML)","Neural Network","Expert Systems (ES)"],
+["Persona asking: “What does my typical user want to do with my product?”","Goal-oriented persona","Role-based persona","Engaging persona","Storyboarding"],
+["Persona reflecting the part users play in their organizations or wider lives","Role-based persona","Goal-oriented persona","Engaging persona","Storyboarding"],
+["Electronic boundary placed around a particular area","Geofencing","Gamification","Interactive demo","Video-based learning"],
+["Training format: practical application","Gamification","Interactive demo","Geofencing","Video-based learning"],
+["IS-A relation (Inheritance)","Semantic Network Representation","Frame Representation","Production Rules","Logical Representation"],
+["Divides knowledge into substructures by representing stereotypes situations","Frame Representation","Semantic Network Representation","Production Rules","Logical Representation"],
+["Knowledge stored as IF-THEN rules","Production Rules","Frame Representation","Semantic Network Representation","Logical Representation"],
+["Rules deciding how to construct legal sentences in the logic","Syntax","Semantics","Production Rules","Logical Representation"],
+["Senses prompted from the inside (headaches, hunger)","Interoception","Exteroception","Proprioception","Cocktail party effect"],
+["How users might hold a device whilst using the interface","Proprioception","Interoception","Exteroception","Pop-out effect"],
+["Pattern: view things which are close together as a group","Proximity","Continuity","Connectedness","Common groupings"],
+["Pattern: interest in straight smooth lines over rigid ones","Continuity","Proximity","Symmetry","Similarity"],
+["Pattern: related objects joined by a continuous straight line","Connectedness","Common groupings","Symmetry","Proximity"],
+["Different shape, color or size makes one image stand out","Pop-out effect","Luminance","Geon","Gross 3D"],
+["2D with 3D perspective, quickly recognizable and cheap to produce","Geon","Gross 3D","Pop-out effect","Luminance"],
+["Going from the specific to the general","Inductive","Deductive","Abductive","Logical Representation"],
+["“Sam driving too fast, thus she has been drinking”","Abductive","Deductive","Inductive","Metaphor"],
+["Skill stage with many errors and few successes","Cognitive (Understanding)","Associative (Practice)","Autonomous (Automatic)","Cognitive Model"],
+["Skill stage able to attend to higher-order cognitive activities","Autonomous (Automatic)","Associative (Practice)","Cognitive (Understanding)","Cognitive Model"],
+["UI visuals exploiting knowledge users already have of other domains","Metaphor","Cognitive Model","Storyboarding","Technological Convergence"],
+["Indicating where in a process or sequence of sub-tasks the user currently is","Temporal cues","Spatial cues","Alerting mechanisms","Pop-out effect"],
+["Quantity of light energy emitted per second in all directions","Luminous Flux","Luminous Intensity","Illuminance","Luminaire"],
+["Ability to emit light into a given direction","Luminous Intensity","Luminous Flux","Illuminance","Reflectance"],
+["Amount of light falling onto a given surface area","Illuminance","Luminous Flux","Luminous Intensity","Reflectance"],
+["Apparatus which distributes, filters or transforms the light given by a lamp","Luminaire","Luminous Flux","Illuminance","Reflectance"],
+["Ratio of luminous flux reflected from a surface to the incident luminous flux","Reflectance","Illuminance","Glare","Veiling Reflections"],
+["Light bouncing off dark colored or glossy surfaces into the eyes","Indirect (Reflected) glare","Direct glare","Veiling Reflections","Flicker"],
+["Reflection of incident light that obscures detail by reducing contrast","Veiling Reflections","Indirect (Reflected) glare","Flicker","Stroboscopic Effects"],
+["Modulation in light output over time","Flicker","Stroboscopic Effects","Glare","Veiling Reflections"],
+["Luminous flux modulation perceived when objects are in motion","Stroboscopic Effects","Flicker","Glare","Veiling Reflections"],
+["Pain caused by repeated movement of part of the body","Repetitive Strain Injury","Visual Fatigue","Tissue Damage","Glare"],
+["Burning irritation with lachrymation, reddening of the eyes and conjunctivitis","Visual Fatigue","Repetitive Strain Injury","Tissue Damage","Glare"],
+["Data flow: how things happen in an information flow","Physical data flow","Logical data flow","Entity Relationship Modelling","Flowchart"],
+["Data flow: what happens in a particular information flow","Logical data flow","Physical data flow","Entity Relationship Modelling","Flowchart"],
+["ER component describing the property of an entity","Attribute","Entity","Relationship","Flowchart"],
+["Any object, class, person or place","Entity","Attribute","Relationship","Flowchart"],
+["Tree-like diagram of the sequence of decisions and actions","Operator Action Event Tree (OAET)","Decision/action flow diagrams","Hierarchical Task Analysis","Flowchart"],
+["Based on binary choice decisions and intervening operations","Decision/action flow diagrams","Operator Action Event Tree (OAET)","Hierarchical Task Analysis","Flowchart"],
+["Disintegrate tasks into subtasks","Hierarchical Task Analysis","Operator Action Event Tree (OAET)","Decision/action flow diagrams","Storyboarding"],
+["Visual representation of a user’s interaction with a product","Storyboarding","Card Sorting","Participatory Design","Hi Fidelity Prototype"],
+["Ask users to organize content, pages and topics into categories","Card Sorting","Focus Group","Participatory Design","Interviews"],
+["Involve users in the generation of different product prototypes","Participatory Design","Focus Group","Card Sorting","Usability Testing"],
+["Obtain a large amount of statistical data; brief and simple feedback","Questionnaires & surveys","Interviews","Usability Testing","Focus Group"],
+["Moderator takes notes while users interact with the product","Usability Testing","Interviews","Focus Group","Participatory Design"],
+["Method: high cost, statistical output, high sample size, used in Design","Card Sorting","Usability Testing","Questionnaires & surveys","Interviews"],
+["Method: low cost, non-statistical, low sample size, requirements gathering","Focus Group","Participatory Design","Interviews","Questionnaires & surveys"],
+["Clearly marked ‘emergency exit’ to leave an unwanted state","User control and freedom","Error prevention","Visibility of system status","Flexibility and efficiency of use"],
+["Confirmation option before users commit to the action","Error prevention","User control and freedom","Help users recognize, diagnose, and recover from errors","Consistency and standards"],
+["Error messages in plain language that constructively suggest a solution","Help users recognize, diagnose, and recover from errors","Error prevention","User control and freedom","Help and Documentation"],
+["Minimize memory load by making objects, actions, and options visible","Recognition rather than recall","Aesthetic and minimalist design","Match between system and the real world","Flexibility and efficiency of use"],
+["Dialogues should not contain irrelevant or rarely needed information","Aesthetic and minimalist design","Recognition rather than recall","Consistency and standards","Help and Documentation"],
+["Using real life metaphor in computer application","Match between system and the real world","Consistency and standards","Recognition rather than recall","Visibility of system status"],
+["Nielsen: auto fill","Flexibility and efficiency of use","Error prevention","Recognition rather than recall","Aesthetic and minimalist design"],
+["Nielsen: follow platform conventions","Consistency and standards","Match between system and the real world","Aesthetic and minimalist design","Help and Documentation"],
+["Nielsen: keep users informed about current state and actions","Visibility of system status","User control and freedom","Match between system and the real world","Offer Informative Feedback"],
+["Close any interaction based on the cause of the interaction","Design Dialog to Yield Closure","Offer Informative Feedback","Support Internal Locus of Control","Permit Easy Reversal of Actions"],
+["Relieve anxiety and encourage exploration","Permit Easy Reversal of Actions","Offer Simple Error Handling","Strive for Consistency","Reduce Short-Term Memory Load"],
+["The user is in control of the system","Support Internal Locus of Control","Offer Informative Feedback","Permit Easy Reversal of Actions","Strive for Consistency"],
+["Consolidate multiple page display","Reduce Short-Term Memory Load","Strive for Consistency","Offer Simple Error Handling","Enable Frequent Users to Use Shortcuts"],
+["Minimum of clicks and a good hierarchy in the menu","Enable Frequent Users to Use Shortcuts","Strive for Consistency","Offer Informative Feedback","Reduce Short-Term Memory Load"],
+["Display feedback immediately for every user action","Offer Informative Feedback","Offer Simple Error Handling","Design Dialog to Yield Closure","Support Internal Locus of Control"],
+["Descriptive hints to resolve the problem","Offer Simple Error Handling","Offer Informative Feedback","Permit Easy Reversal of Actions","Design Dialog to Yield Closure"],
+["Shneiderman’s Golden Rules – number of rules","Eight","Ten","Seven","Six"],
+["Quick sketch of a GUI using paper and pencils or slide show software","Interface Mock Up","Interface Building","Visual Editing","Context Sensitive Help"],
+["Design methods for command languages, data-entry structures, and widgets","Interface Building","Interface Mock Up","Visual Editing","Context Sensitive Help"],
+["Production of Interface – stage 3","Interface Structure","Use Cases","Interface Prototyping","Defining stylistics"],
+["Production of Interface – stage 4","Interface Prototyping","Interface Structure","Defining stylistics","Design Concept"],
+["Production of Interface – final stage (9)","Preparation of materials for programmers","Interface animation","Designing of all screens","Design Concept"],
+["Navigation: one way only; the most structured","Linear","Hierarchical","Webbed","Composite"],
+["Navigation: every page has a parent and only one path leading to it","Hierarchical","Linear","Webbed","Composite"],
+["Navigation: hierarchical with additional links","Webbed","Hierarchical","Linear","Composite"],
+["Small Control / Display Ratio is good for","Rapid movements across long distances","Accurate positioning","Interface Mock Up","Linear"],
+["SUS: ODD number questions","Subtract one from the user response","Subtract the user responses from five","Multiply the total by 2.5","Multiply the total by 5"],
+["SUS: EVEN number questions","Subtract the user responses from five","Subtract one from the user response","Multiply the total by 2.5","Multiply the total by 5"],
+["SUS: total of converted responses is multiplied by","Multiply the total by 2.5","Multiply the total by 5","Subtract one from the user response","Subtract the user responses from five"],
+["NASA-TLX first part: subscales on a single page","Six","Eight","Seven","Ten"],
+["Measures the mental effort people feel was involved in a task","Subjective Mental Effort Questionnaire","NASA-TLX","Usability Magnitude Estimation","After-Scenario Questionnaire"],
+["Judges whether a website is Usable, Credible, Visually appealing","Standardized User Experience Percentile Rank Questionnaire","System Usability Scale","Net Promoter Score (NPS)","NASA-TLX"],
+["Time to acquire a target depends on its distance and size","Fitts’s Law","Keystroke Level Model (KLM)","Control / Display Ratio","Cognitive Model"],
+["Predicts how long an experienced user takes to complete a routine task","Keystroke Level Model (KLM)","Fitts’s Law","NASA-TLX","Cognitive Model"],
+["Principles, methods and testing goals of the organization","Test policy","Test strategy","Test plan","Test Scenario"],
+["Identifies the Test Levels (types) to be executed for the project","Test strategy","Test policy","Test plan","Test summary report"],
+["Planning document containing scope, approach, resources and schedule","Test plan","Test strategy","Test policy","Test summary report"],
+["Connects the requirements to the test cases","Requirements Traceability Matrix","Test case","Test Scenario","Test Data"],
+["Item or event verified by one or more Test cases","Test Scenario","Test case","Test Data","Defect Report"],
+["Input values, preconditions, expected postconditions and results","Test case","Test Scenario","Test Data","Defect Report"],
+["Exists before a test is executed; used to execute the test case","Test Data","Test case","Test Scenario","Defect Report"],
+["Any flaw in a software system which fails to perform its expected function","Defect Report","Test summary report","Test case","Test Scenario"],
+["Summarizes testing activities conducted as well as the test result","Test summary report","Defect Report","Test plan","Test policy"]
+];
+const $=id=>document.getElementById(id),K="hciDrill1",INT=[4,10,25,60,150];
+let S;try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
+if(!S||!S.q)S={turn:0,q:{},tot:0,ok:0,streak:0};
+const sv=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+const st=i=>S.q[i]||(S.q[i]={box:0,due:0,seen:0});
+let cur=-1,last=-1,locked=false,opts=[];
+function pick(){
+  let best=[],bs=1e9;
+  Q.forEach((_,i)=>{if(i===last)return;const s=st(i);
+    const k=s.seen&&s.due<=S.turn?s.box/10:!s.seen?1:2+s.due/1e4;
+    if(k<bs-1e-9){bs=k;best=[i]}else if(Math.abs(k-bs)<1e-9)best.push(i)});
+  return best[Math.floor(Math.random()*best.length)];
+}
+function stats(){
+  const seen=Object.values(S.q).filter(x=>x.seen).length,m=Object.values(S.q).filter(x=>x.box>=3).length;
+  $("st").innerHTML=`<span>Seen <b>${seen}/${Q.length}</b></span><span>Mastered <b>${m}</b></span><span>Accuracy <b>${S.tot?Math.round(100*S.ok/S.tot):0}%</b></span><span>Streak <b>${S.streak}</b></span>`;
+}
+function show(){
+  cur=pick();const q=Q[cur];locked=false;
+  opts=q.slice(1).map((t,i)=>({t,c:i===0}));
+  for(let i=opts.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]]}
+  $("q").textContent=q[0];$("fb").innerHTML="";$("nx").hidden=true;
+  $("os").innerHTML="";
+  opts.forEach((o,i)=>{const b=document.createElement("button");b.className="o";b.textContent=(i+1)+". "+o.t;b.onclick=()=>ans(i);$("os").appendChild(b)});
+  stats();
+}
+function ans(i){
+  if(locked)return;locked=true;
+  const q=Q[cur],o=opts[i],s=st(cur),bs=[...document.querySelectorAll(".o")];
+  S.turn++;S.tot++;s.seen++;
+  if(o.c){S.ok++;S.streak++;s.box=Math.min(s.box+1,5);s.due=S.turn+INT[s.box-1]}
+  else{S.streak=0;s.box=0;s.due=S.turn+3}
+  opts.forEach((x,j)=>{if(x.c)bs[j].classList.add("c");else if(j===i)bs[j].classList.add("w");bs[j].disabled=true});
+  let h=`<p class="h">${o.c?"✔ Correct":"✘ Incorrect"}</p><p><b>${q[1]}</b> — ${T[q[1]]}. This fits the prompt “${q[0]}”.</p>`;
+  if(!o.c)h+=`<p><b>${o.t}</b> — ${T[o.t]}. It does not match this prompt, so it is not the answer here.</p>`;
+  const rest=q.slice(2).filter(x=>x!==o.t);
+  h+=`<small>${o.c?"Why the others don’t fit:":"Other options:"}<br>`+rest.map(x=>`• <b>${x}</b> — ${T[x]}.`).join("<br>")+"</small>";
+  $("fb").innerHTML=h;$("nx").hidden=false;$("nx").focus();sv();stats();
+}
+$("nx").onclick=()=>{last=cur;show()};
+$("rs").onclick=()=>{if(confirm("Reset all progress?")){S={turn:0,q:{},tot:0,ok:0,streak:0};sv();last=-1;show()}};
+document.onkeydown=e=>{if(e.key>="1"&&e.key<="4")ans(+e.key-1);else if(e.key==="Enter"&&locked){e.preventDefault();$("nx").click()}};
+show();
+</script></body></html>
